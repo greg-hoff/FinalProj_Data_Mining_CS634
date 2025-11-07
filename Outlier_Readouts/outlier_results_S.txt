@@ -1,0 +1,17 @@
+Outlier Detection Results for Dataset_S.txt
+==================================================
+
+Z-score Method Outliers:
+Point (90, 82, 99) at line 31, avg distance: 179.35, Z-score: 2.56
+Point (95, 82, -80) at line 96, avg distance: 173.08, Z-score: 2.21
+Point (61, 100, -98) at line 139, avg distance: 176.05, Z-score: 2.37
+Point (73, 91, -88) at line 213, avg distance: 170.50, Z-score: 2.06
+Point (8, 0, 10) at line 239, avg distance: 98.45, Z-score: 2.01
+Point (-96, -86, 79) at line 242, avg distance: 171.76, Z-score: 2.13
+Point (81, -72, -97) at line 303, avg distance: 170.33, Z-score: 2.05
+Point (99, -75, -90) at line 304, avg distance: 177.34, Z-score: 2.45
+Point (-67, 93, 100) at line 351, avg distance: 172.45, Z-score: 2.17
+Point (99, -56, 92) at line 353, avg distance: 172.44, Z-score: 2.17
+Point (100, -74, -96) at line 354, avg distance: 180.55, Z-score: 2.63
+Point (-57, 99, 99) at line 453, avg distance: 171.94, Z-score: 2.14
+Point (-96, 84, -89) at line 474, avg distance: 176.12, Z-score: 2.38
