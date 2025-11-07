@@ -1,0 +1,35 @@
+Hierarchical Agglomerative Clustering Results (k=3)
+==================================================
+s-prime.txt
+Linkage criterion: average
+==================================================
+
+Cluster Centroids:
+Cluster 1: (-96.00, 84.00, -89.00)
+Cluster 2: (84.83, 8.67, -91.50)
+Cluster 3: (-3.83, 22.00, 79.83)
+
+Cluster Assignments:
+
+Cluster 1 (1 points):
+(-96.0, 84.0, -89.0)
+
+Cluster 2 (6 points):
+(81.0, -72.0, -97.0)
+(99.0, -75.0, -90.0)
+(100.0, -74.0, -96.0)
+(95.0, 82.0, -80.0)
+(61.0, 100.0, -98.0)
+(73.0, 91.0, -88.0)
+
+Cluster 3 (6 points):
+(-96.0, -86.0, 79.0)
+(-67.0, 93.0, 100.0)
+(-57.0, 99.0, 99.0)
+(90.0, 82.0, 99.0)
+(8.0, 0.0, 10.0)
+(99.0, -56.0, 92.0)
+
+Final Silhouette Coefficient: 0.3933
+Best performing function: c(i) - max separation
+Merge steps: 10
