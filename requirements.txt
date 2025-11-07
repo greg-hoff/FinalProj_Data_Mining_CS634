@@ -1,0 +1,10 @@
+# Essential packages for this data mining project
+
+# Core numerical computing (used for statistical calculations in K-means and outlier detection)
+numpy>=2.3.4
+
+# Plotting and visualization (used for 3D scatter plots in outlier detection)
+matplotlib>=3.10.7
+
+# Note: math, random, and os are built-in Python modules and don't need to be listed
+# All matplotlib dependencies are automatically installed
