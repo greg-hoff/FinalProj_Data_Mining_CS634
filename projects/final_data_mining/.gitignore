@@ -1,0 +1,6 @@
+# Configuration directories
+.aws/
+.azure/
+.config/
+.docker/
+.pki/
