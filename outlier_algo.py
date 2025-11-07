@@ -116,8 +116,8 @@ def visualize_results(points, outliers_zscore, filename):
     ax.legend()
     
     plt.tight_layout()
-    # Create Outlier Plots directory if it doesn't exist
-    plots_dir = "Outlier Plots"
+    # Create Outlier_Plots directory if it doesn't exist
+    plots_dir = "Outlier_Plots"
     os.makedirs(plots_dir, exist_ok=True)
     
     # Generate dynamic filename for visualization
@@ -163,7 +163,7 @@ def main():
         print(f"  {i+1}. Point ({x}, {y}, {z}) at line {line_num}, avg distance: {distance:.2f}, Z-score: {z_score:.2f}")
     
     # Create output directories if they don't exist
-    outlier_readouts_dir = "Outlier Readouts"
+    outlier_readouts_dir = "Outlier_Readouts"
     prime_dir = "Prime"
     os.makedirs(outlier_readouts_dir, exist_ok=True)
     os.makedirs(prime_dir, exist_ok=True)
