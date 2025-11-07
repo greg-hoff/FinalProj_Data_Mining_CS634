@@ -2,67 +2,34 @@
 """
 Unit tests for K-means Clustering Algorithm
 Tests input handling, output generation, and algorithm correctness.
+Uses shared test base to eliminate redundancy.
 """
 
 import unittest
 import os
 import sys
-import tempfile
-import shutil
-import importlib.util
-from unittest.mock import patch, mock_open
 
-# Add parent directory to path to import the K-means module
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Import shared test base
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from test_base import BaseClusteringTest, AlgorithmTestMixin, load_algorithm_module
 
-# Import with the correct module name
-spec = importlib.util.spec_from_file_location("kmeans_module", 
+# Load K-means module
+kmeans_module = load_algorithm_module("kmeans_module", 
     os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "K-means_cluster_algo.py"))
-kmeans_module = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(kmeans_module)
 KMeansClusterer = kmeans_module.KMeansClusterer
 
 
-class BaseKMeansTest(unittest.TestCase):
-    """Base test class with common setup and utilities."""
-    
-    @classmethod
-    def setUpClass(cls):
-        """Set up test data used across multiple tests."""
-        # Standard test data - 6 points in 3 natural clusters
-        cls.test_data = [
-            [1.0, 2.0, 3.0],   # Cluster 1
-            [2.0, 3.0, 4.0],   # Cluster 1
-            [10.0, 11.0, 12.0], # Cluster 2
-            [11.0, 12.0, 13.0], # Cluster 2
-            [20.0, 21.0, 22.0], # Cluster 3
-            [21.0, 22.0, 23.0]  # Cluster 3
-        ]
-    
-    def setUp(self):
-        """Set up temporary directory for each test."""
-        self.test_dir = tempfile.mkdtemp()
-        self.original_dir = os.getcwd()
-        os.chdir(self.test_dir)
-        
-        # Create standard test dataset file
-        with open('test_dataset.txt', 'w') as f:
-            for point in self.test_data:
-                f.write(f"{point[0]},{point[1]},{point[2]}\n")
-    
-    def tearDown(self):
-        """Clean up temporary directory."""
-        os.chdir(self.original_dir)
-        shutil.rmtree(self.test_dir)
+class BaseKMeansTest(BaseClusteringTest, AlgorithmTestMixin):
+    """Base test class for K-means with shared utilities."""
     
     def create_configured_clusterer(self, k=2):
         """Create a clusterer with standard test setup."""
         clusterer = KMeansClusterer(k=k)
-        clusterer.points = self.test_data
-        clusterer.centroids = [[1.5, 2.5, 3.5], [20.5, 21.5, 22.5]] if k == 2 else None
+        clusterer.points = self.standard_test_data
+        clusterer.centroids = [[0.5, 0.5, 0.5], [20.5, 20.5, 20.5]] if k == 2 else None
         clusterer.clusters = [
-            [[1, 2, 3], [2, 3, 4]],
-            [[20, 21, 22], [21, 22, 23]]
+            [[0, 0, 0], [1, 1, 1]],
+            [[20, 20, 20], [21, 21, 21]]
         ] if k == 2 else None
         return clusterer
 
@@ -82,44 +49,14 @@ class TestKMeansClusterer(BaseKMeansTest):
         self.assertEqual(len(clusterer.clusters), 0)
         self.assertEqual(len(clusterer.points), 0)
     
-    def test_load_dataset_success(self):
-        """Test loading a valid dataset file."""
-        clusterer = KMeansClusterer(k=2)
-        points = clusterer.load_dataset('test_dataset.txt')
-        
-        self.assertEqual(len(points), 6)
-        self.assertEqual(len(clusterer.points), 6)
-        self.assertEqual(points[0], [1.0, 2.0, 3.0])
-        self.assertEqual(points[-1], [21.0, 22.0, 23.0])
-    
-    def test_load_dataset_file_not_found(self):
-        """Test loading a non-existent dataset file."""
-        clusterer = KMeansClusterer(k=2)
-        points = clusterer.load_dataset('nonexistent_file.txt')
-        
-        self.assertEqual(len(points), 0)
-        self.assertEqual(len(clusterer.points), 0)
-    
-    def test_load_dataset_invalid_format(self):
-        """Test loading a dataset with invalid data format."""
-        # Create file with invalid data
-        with open('invalid_dataset.txt', 'w') as f:
-            f.write("1,2,3\n")
-            f.write("invalid,line,here\n")
-            f.write("4,5,6\n")
-        
-        clusterer = KMeansClusterer(k=2)
-        points = clusterer.load_dataset('invalid_dataset.txt')
-        
-        # Should load valid lines only
-        self.assertEqual(len(points), 2)
-        self.assertEqual(points[0], [1.0, 2.0, 3.0])
-        self.assertEqual(points[1], [4.0, 5.0, 6.0])
+    def test_data_loading_operations(self):
+        """Test all data loading scenarios using shared base methods."""
+        self.run_data_loading_tests(KMeansClusterer, k=2)
     
     def test_initialize_centroids(self):
         """Test centroid initialization."""
         clusterer = KMeansClusterer(k=3)
-        clusterer.points = self.test_data
+        clusterer.points = self.standard_test_data
         clusterer.initialize_centroids()
         
         self.assertEqual(len(clusterer.centroids), 3)
@@ -136,20 +73,15 @@ class TestKMeansClusterer(BaseKMeansTest):
             clusterer.initialize_centroids()
     
     def test_euclidean_distance(self):
-        """Test Euclidean distance calculation."""
+        """Test Euclidean distance calculation using shared base methods."""
         clusterer = KMeansClusterer(k=2)
-        
-        point1 = [0, 0, 0]
-        point2 = [3, 4, 0]
-        distance = clusterer.euclidean_distance(point1, point2)
-        
-        self.assertAlmostEqual(distance, 5.0, places=2)
+        self.run_distance_calculation_tests(clusterer)
     
     def test_assign_points_to_clusters(self):
         """Test point assignment to clusters."""
         clusterer = KMeansClusterer(k=2)
-        clusterer.points = self.test_data
-        clusterer.centroids = [[1, 2, 3], [20, 21, 22]]  # Two distinct centroids
+        clusterer.points = self.standard_test_data
+        clusterer.centroids = [[1, 1, 1], [20, 20, 20]]  # Two distinct centroids
         
         clusters = clusterer.assign_points_to_clusters()
         
@@ -187,19 +119,15 @@ class TestKMeansClusterer(BaseKMeansTest):
     def test_algorithm_convergence(self):
         """Test that the algorithm converges and produces valid results."""
         clusterer = KMeansClusterer(k=2, max_iterations=10)
-        clusterer.points = self.test_data
+        clusterer.points = self.standard_test_data
         
         centroids, clusters = clusterer.fit()
         
-        # Verify structure
-        self.assertEqual(len(centroids), 2)
-        self.assertEqual(len(clusters), 2)
-        
-        # Verify all points are assigned
-        total_assigned = sum(len(cluster) for cluster in clusters)
-        self.assertEqual(total_assigned, len(self.test_data))
+        # Use shared validation method
+        self.assert_valid_clustering_result(clusters, 2, len(self.standard_test_data))
         
         # Verify centroid validity
+        self.assertEqual(len(centroids), 2)
         for centroid in centroids:
             self.assertEqual(len(centroid), 3)
             for coord in centroid:
@@ -211,37 +139,37 @@ class TestKMeansClusterer(BaseKMeansTest):
         
         silhouette, best_function = clusterer.calculate_silhouette_coefficient()
         
-        self.assertIsInstance(silhouette, float)
-        self.assertGreaterEqual(silhouette, -1.0)
-        self.assertLessEqual(silhouette, 1.0)
-        self.assertIsInstance(best_function, str)
+        # Use shared validation method
+        self.assert_valid_silhouette_score(silhouette, best_function)
     
     def test_output_operations(self):
         """Test save_results and print_results operations."""
         clusterer = self.create_configured_clusterer(k=2)
         clusterer.iteration_history = [0.5, 0.3, 0.1]
         
-        # Test save_results
-        os.makedirs('K-means_Cluster_Results', exist_ok=True)
-        result_file = 'K-means_Cluster_Results/test_results.txt'
-        clusterer.save_results(result_file, 'test_dataset.txt')
+        # Test save_results using shared helper
+        content = self.create_results_file_and_verify(
+            clusterer.save_results,
+            'K-means_Cluster_Results',
+            'kmeans',
+            self.standard_data_file
+        )
         
-        self.assertTrue(os.path.exists(result_file))
-        
-        # Check file contents
-        with open(result_file, 'r') as f:
-            content = f.read()
-            self.assertIn('K-means Clustering Results', content)
-            self.assertIn('test_dataset.txt', content)
-            self.assertIn('Centroids:', content)
-            self.assertIn('Cluster Assignments:', content)
-            self.assertIn('Silhouette Coefficient:', content)
+        # Check K-means specific content
+        self.assertIn('K-means Clustering Results', content)
+        self.assertIn('Centroids:', content)
+        self.assertIn('Cluster Assignments:', content)
+        self.assertIn('Silhouette Coefficient:', content)
         
         # Test print_results (should not raise exceptions)
         try:
             clusterer.print_results()
         except Exception as e:
             self.fail(f"print_results raised an exception: {e}")
+    
+    def test_edge_cases(self):
+        """Test edge cases using shared base methods."""
+        self.run_edge_case_tests(KMeansClusterer, k=2)
 
 
 class TestKMeansIntegration(BaseKMeansTest):
@@ -252,35 +180,36 @@ class TestKMeansIntegration(BaseKMeansTest):
         super().setUp()  # Call parent setup
         
         # Create Prime directory and test file for integration testing
-        os.makedirs('Prime', exist_ok=True)
-        with open('Prime/test-prime.txt', 'w') as f:
-            for point in self.test_data:
-                f.write(f"{point[0]},{point[1]},{point[2]}\n")
+        prime_dir = os.path.join(self.temp_dir, 'Prime')
+        os.makedirs(prime_dir, exist_ok=True)
+        self.prime_file = os.path.join(prime_dir, 'test-prime.txt')
+        self._create_data_file(self.prime_file, self.standard_test_data)
     
     def test_complete_workflow_with_file_handling(self):
         """Test end-to-end workflow focusing on file I/O and folder structure."""
         clusterer = KMeansClusterer(k=2)
         
         # Test loading from Prime folder structure
-        points = clusterer.load_dataset('Prime/test-prime.txt')
-        self.assertEqual(len(points), 6)
+        points = clusterer.load_dataset(self.prime_file)
+        self.assertEqual(len(points), len(self.standard_test_data))
         
         # Run full workflow
         centroids, clusters = clusterer.fit()
         
-        # Test output with folder structure
-        os.makedirs('K-means_Cluster_Results', exist_ok=True)
-        result_file = 'K-means_Cluster_Results/test_output.txt'
-        clusterer.save_results(result_file, 'Prime/test-prime.txt')
+        # Use shared validation
+        self.assert_valid_clustering_result(clusters, 2, len(self.standard_test_data))
         
-        # Verify file handling and content
-        self.assertTrue(os.path.exists(result_file))
-        with open(result_file, 'r') as f:
-            content = f.read()
-            self.assertGreater(len(content), 100)
-            # Should extract base filename correctly from folder path
-            self.assertIn('test-prime.txt', content)
-            self.assertNotIn('Prime/', content)  # Should not include folder path
+        # Test output with folder structure using shared helper
+        content = self.create_results_file_and_verify(
+            clusterer.save_results,
+            os.path.join(self.temp_dir, 'K-means_Cluster_Results'),
+            'integration',
+            self.prime_file
+        )
+        
+        # Should extract base filename correctly from folder path
+        self.assertIn('test-prime.txt', content)
+        self.assertNotIn('Prime/', content)  # Should not include folder path
 
 
 if __name__ == '__main__':
