@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-K-means Clustering Algorithm Implementation for Dataset_S_prime.txt
+K-means Clustering Algorithm Implementation for q, r, or s_prime.txt
 This program implements the K-means clustering algorithm to cluster 3D points
-into k user-specified clusters.
+into k user-specified clusters. k value is input by the user upon execution.
+Then calculates silhouette coefficient using enhanced method with four metrics. The metric with the best score is reported.
 """
 
 import math
@@ -143,10 +144,10 @@ class KMeansClusterer:
         Calculate the average silhouette coefficient for all points.
         
         Uses enhanced silhouette calculation with four metrics:
-        - a(i): average distance between the centers of two clusters (centroid separation)
-        - b(i): minimum average distance to points in other clusters (separation)
-        - c(i): minimum of maximum distances between farthest points in clusters (max separation)
-        - d(i): minimum of minimum distances between nearest points in clusters (min separation)
+        - a(i): average distance between the centers of two clusters (centroid separation, distance between centroids)
+        - b(i): minimum average distance to points in other clusters (separation, average distance between points in other clusters)
+        - c(i): minimum of maximum distances between farthest points in clusters (max separation, distance between farthest points)
+        - d(i): minimum of minimum distances between nearest points in clusters (min separation, distance between nearest points)
         
         Final score returns the best normalized silhouette score (range [-1,1]) among all metrics across all points.
         Uses standard silhouette formula: (separation - cohesion) / max(separation, cohesion) for each metric. 
@@ -372,7 +373,7 @@ def main():
     print("=== K-means Clustering Algorithm ===")
     
     # Get user input for filename
-    user_input = input("Enter the dataset filename (e.g., s-prime): ").strip()
+    user_input = input("Enter the dataset filename (q, r or, s-prime): ").strip()
     if not user_input:
         print("Error: Filename cannot be empty.")
         return

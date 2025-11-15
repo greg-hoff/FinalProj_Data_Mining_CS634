@@ -3,6 +3,8 @@
 Hierarchical Agglomerative Clustering (HAC) Algorithm Implementation
 This program implements hierarchical agglomerative clustering to cluster 3D points
 into k user-specified clusters using bottom-up approach.
+The user specifies the number of clusters (k) and the linkage criterion upon execution.
+Then calculates silhouette coefficient using enhanced method with four metrics. The metric with the best score is reported.
 """
 
 import math
@@ -285,10 +287,10 @@ class HierarchicalClusterer:
         
         # Find the best performing metric
         metrics = {
-            'a(i) - centroid separation': avg_a,
-            'b(i) - min avg separation': avg_b,
-            'c(i) - max separation': avg_c,
-            'd(i) - min separation': avg_d
+            'a(i) - centroid separation, distance between centroids': avg_a,
+            'b(i) - min avg separation, average distance between points in other clusters': avg_b,
+            'c(i) - max separation, distance between farthest points': avg_c,
+            'd(i) - min separation, distance between nearest points': avg_d
         }
         
         best_metric = max(metrics, key=metrics.get)
@@ -383,7 +385,7 @@ def main():
     print("=== Hierarchical Agglomerative Clustering Algorithm ===")
     
     # Get user input for filename
-    user_input = input("Enter the dataset filename (e.g., s-prime): ").strip()
+    user_input = input("Enter the dataset filename (q, r, or s-prime): ").strip()
     if not user_input:
         print("Error: Filename cannot be empty.")
         return
