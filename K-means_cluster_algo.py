@@ -227,21 +227,21 @@ class KMeansClusterer:
                         b_score = 0
                     else:
                         b_score = (b_i - a_i) / max(a_i, b_i)
-                    score_data.append((b_score, 'b(i) - avg separation'))
+                    score_data.append((b_score, 'b(i) - min avg separation, average distance between points in other clusters'))
                 
                 if c_i != float('inf'):
                     if max(a_i, c_i) == 0:
                         c_score = 0
                     else:
                         c_score = (c_i - a_i) / max(a_i, c_i)
-                    score_data.append((c_score, 'c(i) - max separation'))
+                    score_data.append((c_score, 'c(i) - max separation, distance between farthest points'))
                 
                 if d_i != float('inf'):
                     if max(a_i, d_i) == 0:
                         d_score = 0
                     else:
                         d_score = (d_i - a_i) / max(a_i, d_i)
-                    score_data.append((d_score, 'd(i) - min separation'))
+                    score_data.append((d_score, 'd(i) - min separation, distance between nearest points'))
                 
                 # Store all score data for this point
                 silhouette_scores.extend(score_data)

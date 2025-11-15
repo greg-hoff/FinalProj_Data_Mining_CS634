@@ -112,10 +112,10 @@ class BaseClusteringTest(unittest.TestCase):
         
         # Best function should be one of the valid metrics
         expected_functions = [
-            'a(i) - centroid separation',
-            'b(i) - min avg separation', 
-            'c(i) - max separation',
-            'd(i) - min separation',
+            'a(i) - centroid separation, distance between centroids',
+            'b(i) - min avg separation, average distance between points in other clusters', 
+            'c(i) - max separation, distance between farthest points',
+            'd(i) - min separation, distance between nearest points',
             'single_cluster',
             'no_valid_scores'
         ]
