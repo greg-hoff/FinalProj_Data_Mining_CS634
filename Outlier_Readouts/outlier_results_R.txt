@@ -15,3 +15,8 @@ Point (-97, 64, -98) at line 369, avg distance: 173.96, Z-score: 2.30
 Point (73, 99, -86) at line 371, avg distance: 172.97, Z-score: 2.25
 Point (-77, -90, -84) at line 455, avg distance: 169.00, Z-score: 2.03
 Point (-70, 100, 88) at line 489, avg distance: 171.33, Z-score: 2.16
+
+Clean Dataset Summary:
+Total original points: 500
+Outliers detected: 13
+Clean points remaining: 487
