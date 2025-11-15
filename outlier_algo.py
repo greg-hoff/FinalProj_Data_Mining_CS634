@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Outlier Detection in Dataset_S.txt using Euclidean Distance
+Outlier Detection in Dataset_X.txt using Euclidean Distance
 This script identifies outliers by calculating the average distance from each point
-to all other points and flagging points that exceed a threshold.
+to all other points and flagging points that exceed a Z-score threshold. Currently, the threshold is set to 2.0.
 """
 
 import math
@@ -132,7 +132,7 @@ def main():
     print("=== Outlier Detection Algorithm ===")
     
     # Get user input for dataset filename
-    filename = input("Enter the dataset filename (e.g., Dataset_S.txt): ").strip()
+    filename = input("Enter the dataset filename (Dataset_Q, R, or S.txt): ").strip()
     if not filename:
         print("Error: Filename cannot be empty.")
         return
@@ -182,14 +182,31 @@ def main():
         for point_data, distance, z_score in outliers_zscore:
             x, y, z, line_num = point_data
             f.write(f"Point ({x}, {y}, {z}) at line {line_num}, avg distance: {distance:.2f}, Z-score: {z_score:.2f}\n")
+        
+        # Add clean dataset summary
+        outlier_line_numbers = {point_data[3] for point_data, _, _ in outliers_zscore}
+        clean_count = len([p for p in points if p[3] not in outlier_line_numbers])
+        f.write(f"\nClean Dataset Summary:\n")
+        f.write(f"Total original points: {len(points)}\n")
+        f.write(f"Outliers detected: {len(outliers_zscore)}\n")
+        f.write(f"Clean points remaining: {clean_count}\n")
     
-    # Save outliers to prime file
+    # Create set of outlier line numbers for quick lookup
+    outlier_line_numbers = {point_data[3] for point_data, _, _ in outliers_zscore}
+    
+    # Save clean data (non-outliers) to prime file
+    clean_points = []
+    for point in points:
+        x, y, z, line_num = point
+        if line_num not in outlier_line_numbers:
+            clean_points.append((x, y, z))
+    
     with open(prime_filename, 'w') as f:
-        for point_data, _, _ in outliers_zscore:
-            x, y, z, line_num = point_data
+        for x, y, z in clean_points:
             f.write(f"{x},{y},{z}\n")
     
-    print(f"\nResults saved to '{results_filename}' and '{prime_filename}'")
+    print(f"\nResults saved to '{results_filename}'")
+    print(f"Clean dataset ({len(clean_points)} points after removing {len(outliers_zscore)} outliers) saved to '{prime_filename}'")
     
     # Create visualization
     try:
