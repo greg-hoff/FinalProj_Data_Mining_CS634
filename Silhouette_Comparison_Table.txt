@@ -1,0 +1,30 @@
+Silhouette Coefficient Comparison: K-means vs Hierarchical Agglomerative Clustering
+========================================================================================================================
+Dataset: Clean prime datasets (outliers removed)
+Clusters: k=3 for all algorithms
+HAC Linkage: Complete and Average linkage compared
+========================================================================================================================
+
+| Dataset | K-means      | Function Used        | HAC Complete | Function Used        | HAC Average  | Function Used        |
+|---------|--------------|----------------------|--------------|----------------------|--------------|----------------------|
+| q-prime | 0.6083       | c(i) - max separatio | 0.5007       | c(i) - max separatio | 0.5041       | c(i) - max separatio |
+| r-prime | 0.6200       | c(i) - max separatio | 0.4674       | c(i) - max separatio | 0.5127       | c(i) - max separatio |
+| s-prime | 0.5997       | c(i) - max separatio | 0.5059       | c(i) - max separatio | 0.4955       | c(i) - max separatio |
+
+Performance Summary:
+--------------------------------------------------
+K-means Average: 0.6093
+HAC Complete Average: 0.4913
+HAC Average Average: 0.5041
+
+Best Method by Dataset:
+------------------------------
+q-prime: K-means (0.6083)
+r-prime: K-means (0.6200)
+s-prime: K-means (0.5997)
+
+Notes:
+- Silhouette coefficients range from -1 to +1
+- Higher values indicate better clustering quality
+- Function indicates which silhouette calculation method performed best
+- Common functions: a(i)=centroid separation, b(i)=min avg separation, c(i)=max separation, d(i)=min separation
